@@ -70,7 +70,26 @@ Description :
 		  
 		 {pattern="/api/tables/:action",handler="rest.table",
 		 description="Returns table actions",
-		 methods="GET",headers=[],parameters=[],placeholders=[]}
+		 methods="GET",headers=[],parameters=[],placeholders=[]},
+		 
+		 {
+ 			pattern="/api/user", handler="rest.user", description="User resource.",
+ 			methods="GET,POST",
+ 			parameters=[
+ 				{name="userID", description="The userID of the User record.", required=false},
+ 				{name="username", description="The username of the User record.", required=false}
+ 			],
+ 			response={
+ 				schemas=[
+ 					{format="json", description="The following will be returned when the format requested is JSON.", body=fileRead(expandPath("/docs/api/schemas/user.json"))},
+ 					{format="xml", description="The following will be returned when the format requested is XML.", body=fileRead(expandPath("/docs/api/schemas/user.xsd"))}
+ 				],
+ 				samples=[
+ 					{format="json", description="The basic user information will be returned in a flat object.", body=fileRead(expandPath("/docs/api/samples/response/users/user.json"))},
+ 					{format="json", description="If the requested user is not found, or some other error has occurred, the resopnse will be like the following.", body=fileRead(expandPath("/docs/api/samples/response/failure.json"))}
+ 				]
+ 			}
+ 		}
 	];
 </cfscript>
 </cfcomponent>

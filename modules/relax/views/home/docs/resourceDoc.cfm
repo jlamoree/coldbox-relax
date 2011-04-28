@@ -1,3 +1,6 @@
+<cfsilent>
+	<cfset thisFormatBrushMap = {json="javascript", xml="html"}/>
+</cfsilent>
 <cfoutput>
 <!--- Print Button --->
 <cfif NOT event.valueExists("print")>
@@ -18,7 +21,7 @@
 
 <!--- Pattern Title --->
 <h3>
-<img src="#rc.root#/includes/images/website.png" alt="resource"/> 
+<img src="#rc.root#/includes/images/website.png" alt="resource"/>
 <cfif rc.expandedDiv>
 #rc.thisResource.pattern#
 <cfelse>
@@ -56,9 +59,9 @@
 		<legend>URL Pattern Placeholders</legend>
 		<p>The following patterns are part of the RESTful resource and must be passed in the exact
 		position shown in the URL resource. Usually placeholders start with a <strong>(:)</strong> colon.</p>
-		
+
 		<pre class="brush: html; auto-links:false">#rc.thisResource.pattern#<cfif rc.dsl.relax.extensionDetection>.{format}</cfif></pre>
-		
+
 		<cfif NOT structKeyExists(rc.thisResource,"placeholders") or NOT arrayLen(rc.thisResource.placeholders)>
 			<em>Route Pattern has no Placeholders</em>
 		<cfelse>
@@ -76,7 +79,7 @@
 					<td><cfif structKeyExists(thisHolder,"type")>#thisHolder.type#<cfelse>string</cfif></td>
 					<td><cfif structKeyExists(thisHolder,"required")>#thisHolder.required#<cfelse>false</cfif></td>
 					<td><cfif structKeyExists(thisHolder,"default")>#thisHolder.default#<cfelse>---</cfif></td>
-					<td><cfif structKeyExists(thisHolder,"description")>#thisHolder.description#<cfelse>---</cfif></td>							
+					<td><cfif structKeyExists(thisHolder,"description")>#thisHolder.description#<cfelse>---</cfif></td>
 				</tr>
 				</cfloop>
 			</table>
@@ -107,7 +110,7 @@
 						<td><cfif structKeyExists(thisHeader,"type")>#thisHeader.type#<cfelse>string</cfif></td>
 						<td><cfif structKeyExists(thisHeader,"required")>#thisHeader.required#<cfelse>false</cfif></td>
 						<td><cfif structKeyExists(thisHeader,"default")>#thisHeader.default#<cfelse>---</cfif></td>
-						<td><cfif structKeyExists(thisHeader,"description")>#thisHeader.description#<cfelse>---</cfif></td>							
+						<td><cfif structKeyExists(thisHeader,"description")>#thisHeader.description#<cfelse>---</cfif></td>
 					</tr>
 				</cfloop>
 			</table>
@@ -134,10 +137,47 @@
 						<td><cfif structKeyExists(thisParam,"type")>#thisParam.type#<cfelse>string</cfif></td>
 						<td><cfif structKeyExists(thisParam,"required")>#thisParam.required#<cfelse>false</cfif></td>
 						<td><cfif structKeyExists(thisParam,"default")>#thisParam.default#<cfelse>---</cfif></td>
-						<td><cfif structKeyExists(thisParam,"description")>#thisParam.description#<cfelse>---</cfif></td>							
+						<td><cfif structKeyExists(thisParam,"description")>#thisParam.description#<cfelse>---</cfif></td>
 					</tr>
 				</cfloop>
 			</table>
+		</cfif>
+	</fieldset>
+	<!--- Response --->
+	<fieldset>
+		<legend>Response</legend>
+		<cfif NOT structKeyExists(rc.thisResource,"response") or NOT structCount(rc.thisResource.response)>
+			<em>No Parameters</em>
+		<cfelse>
+			<cfif structKeyExists(rc.thisResource.response, "schemas") and arrayLen(rc.thisResource.response.schemas)>
+				<p><strong>Schemas</strong></p>
+				<cfloop array="#rc.thisResource.response.schemas#" index="thisSchema">
+					<cfif structKeyExists(thisSchema, "description")>
+						<p>#thisSchema.description#</p>
+					</cfif>
+					<cfif structKeyExists(thisFormatBrushMap, thisSchema.format)>
+						<cfset thisBrush = thisFormatBrushMap[thisSchema.format]/>
+					<cfelse>
+						<cfset thisBrush = thisSchema.format/>
+					</cfif>
+					<pre class="brush: #thisBrush#; auto-links:false">#htmlEditFormat(thisSchema.body)#</pre>
+				</cfloop>
+			</cfif>
+
+			<cfif structKeyExists(rc.thisResource.response, "samples") and arrayLen(rc.thisResource.response.samples)>
+				<p><strong>Samples</strong></p>
+				<cfloop array="#rc.thisResource.response.samples#" index="thisSample">
+					<cfif structKeyExists(thisSample, "description")>
+						<p>#thisSample.description#</p>
+					</cfif>
+					<cfif structKeyExists(thisFormatBrushMap, thisSample.format)>
+						<cfset thisBrush = thisFormatBrushMap[thisSample.format]/>
+					<cfelse>
+						<cfset thisBrush = thisSample.format/>
+					</cfif>
+					<pre class="brush: #thisBrush#; auto-links:false">#htmlEditFormat(thisSample.body)#</pre>
+				</cfloop>
+			</cfif>
 		</cfif>
 	</fieldset>
 </div>
